@@ -77,7 +77,10 @@ ln -s /etc/nginx/sites-available/gallery /etc/nginx/sites-enabled
 rm /etc/nginx/sites-enabled/default
 
 # The gallery application itself.
-git clone https://github.com/almafeta/gallery /web/gallery
+cd /web/gallery
+git init .
+git remote add origin https://github.com/almafeta/gallery.git
+git pull origin master
 
 # Restart services and add them to the autoplay lists
 systemctl start nginx
