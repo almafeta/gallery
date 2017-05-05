@@ -74,8 +74,12 @@ server {
 EOF
 
 ln -s /etc/nginx/sites-available/gallery /etc/nginx/sites-enabled
+rm /etc/nginx/sites-enabled/default
 
-# Restart services
+# The gallery application itself.
+git clone https://github.com/almafeta/gallery /web/gallery
+
+# Restart services and add them to the autoplay lists
 systemctl start nginx
 systemctl enable nginx
 systemctl start gallery
