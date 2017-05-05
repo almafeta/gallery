@@ -87,3 +87,4 @@ systemctl start nginx
 systemctl enable nginx
 systemctl start gallery
 systemctl enable gallery
+service nginx restart
