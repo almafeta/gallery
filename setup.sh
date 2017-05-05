@@ -4,7 +4,7 @@
 
 if (( $EUID != 0)); then
 	echo "This script requires superuser permissions.  Please run:"
-	echo "sudo source setup.sh"
+	echo "sudo /home/username/setup.sh"
 	exit
 fi
 
@@ -25,7 +25,7 @@ cd /web
 
 # Setup virtualenv for /web/gallery
 virtualenv gallery
-source gallery/bin/activate; pip install uwsgi;deactivate
+source gallery/bin/activate; pip install uwsgi web.py;deactivate
 
 # make sure gallery:www-data owns /web/gallery
 chown -R gallery:www-data /web/gallery
