@@ -10,7 +10,7 @@ fi
 
 # Install prerequisite software
 apt-get update
-apt-get install nginx python-dev python-pip
+apt-get -y install nginx python-dev python-pip
 
 pip install virtualenv
 
@@ -31,7 +31,7 @@ source gallery/bin/activate; pip install uwsgi;deactivate
 chown -R gallery:www-data /web/gallery
 
 # Configure uWSGI in virtualenv
-cat << EOF > gallery.ini
+cat << EOF > /web/gallery/gallery.ini
 [uwsgi]
 module = gallery:application
 
@@ -78,3 +78,5 @@ ln -s /etc/nginx/sites-available/gallery /etc/nginx/sites-enabled
 # Restart services
 systemctl start nginx
 systemctl enable nginx
+systemctl start gallery
+systemctl enable gallery
