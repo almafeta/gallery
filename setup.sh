@@ -77,7 +77,7 @@ ln -s /etc/nginx/sites-available/gallery /etc/nginx/sites-enabled
 rm /etc/nginx/sites-enabled/default
 
 # Setup postgre for the gallery
-gallerydbpassword=$(cat /dev/urandom | tr -dc'a-zA-Z0-9' | fold -w 32 | head -n 1)
+gallerydbpassword=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 id -u "gallerydb" &>/dev/null || useradd gallerydb
 sudo -u postgres bash -c "psql -c \"CREATE USER gallerydb WITH PASSWORD '$gallerydbpassword';\""
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE gallery WITH OWNER=gallerydb;\""
