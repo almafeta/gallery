@@ -81,7 +81,7 @@ gallerydbpassword=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n
 id -u "gallerydb" &>/dev/null || useradd gallerydb
 sudo -u postgres bash -c "psql -c \"CREATE USER gallerydb WITH PASSWORD '$gallerydbpassword';\""
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE gallery WITH OWNER=gallerydb;\""
-sudo -u postgres bash -c "psql -c \"CREATE TABLE gallery.gallery (id serial NOT NULL, pass character(40) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
+sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery (id serial NOT NULL, pass character(40) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
 
 echo "dbpass = $gallerydbpassword" >> /web/gallery/secrets.py
 
