@@ -83,7 +83,7 @@ sudo -u postgres bash -c "psql -c \"CREATE USER gallerydb WITH PASSWORD '$galler
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE gallery WITH OWNER=gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery (id serial NOT NULL, pass character(40) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
 
-echo "dbpass = $gallerydbpassword" >> /web/gallery/secrets.py
+echo "dbpass = \"$gallerydbpassword\"" >> /web/gallery/secrets.py
 
 # Fetch the gallery application itself.
 cd /web/gallery
