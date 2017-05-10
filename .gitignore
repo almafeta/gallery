@@ -108,3 +108,6 @@ pyvenv.cfg
 
 ## uwsgi
 gallery.sock
+
+## Generated on install.
+secrets.py

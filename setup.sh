@@ -10,7 +10,7 @@ fi
 
 # Install prerequisite software
 apt-get update
-apt-get -y install nginx python-dev python-pip
+apt-get -y install nginx python-dev python-pip postgresql
 
 pip install virtualenv
 
@@ -76,7 +76,16 @@ EOF
 ln -s /etc/nginx/sites-available/gallery /etc/nginx/sites-enabled
 rm /etc/nginx/sites-enabled/default
 
-# The gallery application itself.
+# Setup postgre for the gallery
+gallerydbpassword=$(cat /dev/urandom | tr -dc'a-zA-Z0-9' | fold -w 32 | head -n 1)
+id -u "gallerydb" &>/dev/null || useradd gallerydb
+sudo -u postgres bash -c "psql -c \"CREATE USER gallerydb WITH PASSWORD '$gallerydbpassword';\""
+sudo -u postgres bash -c "psql -c \"CREATE DATABASE gallery WITH OWNER=gallerydb;\""
+sudo -u postgres bash -c "psql -c \"CREATE TABLE gallery.gallery (id serial NOT NULL, pass character(40) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
+
+echo "dbpass = $gallerydbpassword" >> /web/gallery/secrets.py
+
+# Fetch the gallery application itself.
 cd /web/gallery
 git init .
 git remote add origin https://github.com/almafeta/gallery.git
@@ -88,3 +97,7 @@ systemctl enable nginx
 systemctl start gallery
 systemctl enable gallery
 service nginx restart
+
+# Final notices
+echo "Gallery installed!  Save this information."
+echo "gallerydb postgres password set to: $gallerydbpassword"
