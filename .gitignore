@@ -111,3 +111,6 @@ gallery.sock
 
 ## Generated on install.
 secrets.py
+
+## Generated at runtime.
+sessions/

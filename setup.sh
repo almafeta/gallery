@@ -2,9 +2,16 @@
 # setup.sh
 # Turns a stock Ubuntu 16 install into a gallery host
 
+set -eu
+
 if (( $EUID != 0)); then
 	echo "This script requires superuser permissions.  Please run:"
 	echo "sudo /home/username/setup.sh"
+	exit
+fi
+
+if [[ ! -f /web/gallery/secrets.py ]] ; then
+	echo "This script seems to have already been run.  Exiting..."
 	exit
 fi
 
@@ -19,7 +26,6 @@ id -u "gallery" &>/dev/null || useradd gallery
 usermod -a -G www-data gallery
 
 # Create directory to hold everything
-
 mkdir /web
 cd /web
 
@@ -78,12 +84,17 @@ rm /etc/nginx/sites-enabled/default
 
 # Setup postgre for the gallery
 gallerydbpassword=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
+gallerydbsalt=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 id -u "gallerydb" &>/dev/null || useradd gallerydb
 sudo -u postgres bash -c "psql -c \"CREATE USER gallerydb WITH PASSWORD '$gallerydbpassword';\""
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE gallery WITH OWNER=gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery (id serial NOT NULL, pass character(40) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
 
+echo "# secrets.py - created by setup.sh" >> /web/gallery/secrets.py
 echo "dbpass = \"$gallerydbpassword\"" >> /web/gallery/secrets.py
+echo "dbsalt = \"$gallerydbsalt\"" >> /web/gallery/secrets.py
+
+chown gallery:www-data /web/gallery/secrets.py
 
 # Fetch the gallery application itself.
 cd /web/gallery
