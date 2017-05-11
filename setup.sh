@@ -2,11 +2,11 @@
 # setup.sh
 # Turns a stock Ubuntu 16 install into a gallery host
 
-set -eu
+set -e
 
 if (( $EUID != 0)); then
 	echo "This script requires superuser permissions.  Please run:"
-	echo "sudo /home/username/setup.sh"
+	echo "sudo ./setup.sh"
 	exit
 fi
 
