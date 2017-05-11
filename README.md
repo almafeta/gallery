@@ -21,7 +21,7 @@ Setup currently assumes an Ubuntu 16.06 box.  After a fresh install:
 
 - `wget https://raw.githubusercontent.com/almafeta/gallery/master/setup.sh`
 - `chmod 764 setup.sh`
-- `sudo /home/username/setup.sh`
+- `sudo ./setup.sh`
 
 Enter your password and let it run.
 

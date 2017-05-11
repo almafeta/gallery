@@ -10,7 +10,7 @@ if (( $EUID != 0)); then
 	exit
 fi
 
-if [[ ! -f /web/gallery/secrets.py ]] ; then
+if [ -e /web/gallery/secrets.py ] ; then
 	echo "This script seems to have already been run.  Exiting..."
 	exit
 fi
