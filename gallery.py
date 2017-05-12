@@ -9,7 +9,6 @@ urls = (
 	'/register', 'register'
 )
 
-
 class index:
 	def GET(self):
 		render = web.template.render('templates', base='layout')
@@ -50,10 +49,19 @@ class register:
 		render = web.template.render('templates', base='layout')
 		return render.register()
 
+	def POST(self):
+		username, passwd = web.input().name, web.input().passwd1
+		try:
+			namecheck = db.query("SELECT exists(SELECT 1 FROM gallery WHERE username=${un})", vars={'un':username})
+			return namecheck[0]
+		except:
+			return render.register_error("An unknown error occurred.")
+
 def loggedin():
 	return (session.login==1)
 
 app = web.application(urls, globals())
 application = app.wsgifunc()
+db = web.database(dbn='postgres', db='gallery', user='gallerydb', pw=secrets.dbpass)
 store = web.session.DiskStore('sessions')
 session = web.session.Session(app, store, initializer={'login': 0})

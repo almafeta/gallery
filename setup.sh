@@ -17,7 +17,7 @@ fi
 
 # Install prerequisite software
 apt-get update
-apt-get -y install nginx python-dev python-pip postgresql
+apt-get -y install nginx python-dev python-pip postgresql libpq-dev
 
 pip install virtualenv
 
@@ -31,7 +31,7 @@ cd /web
 
 # Setup virtualenv for /web/gallery
 virtualenv gallery
-source gallery/bin/activate; pip install uwsgi web.py;deactivate
+source gallery/bin/activate; pip install uwsgi web.py pygresql;deactivate
 
 # make sure gallery:www-data owns /web/gallery
 chown -R gallery:www-data /web/gallery
@@ -88,7 +88,7 @@ gallerydbsalt=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 id -u "gallerydb" &>/dev/null || useradd gallerydb
 sudo -u postgres bash -c "psql -c \"CREATE USER gallerydb WITH PASSWORD '$gallerydbpassword';\""
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE gallery WITH OWNER=gallerydb;\""
-sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery (id serial NOT NULL, pass character(128) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
+sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery (id serial NOT NULL, pass character(128) NOT NULL, username character varying(128) NOT NULL, admin bool, salt character(32));\""
 
 echo "# secrets.py - created by setup.sh" >> /web/gallery/secrets.py
 echo "dbpass = \"$gallerydbpassword\"" >> /web/gallery/secrets.py

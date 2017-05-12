@@ -1,5 +1,23 @@
 $var title: Register for Gallery
 
-<p>This is a nifty registration page!</p>
-<p>Or it will be.  The database isn't set up yet.</p>
-<p>-Shanya</p>
+<form action="/register" method="POST">
+	<table id="login">
+		<tr>
+			<td>Login: </td>
+			<td><input type="text" name="user"><br>This login will not be your screen name and cannot be changed!</td>
+		</tr>
+		<tr>
+			<td>Password:</td>
+			<td><input type="password" name="passwd1"></td>
+		</tr>
+		<tr>
+			<td>Password (again): </td>
+			<td><input type="password" name="passwd2"></td>
+		</tr>
+		<tr>
+			<td></td>
+			<td><input type="submit" value="Register"></td>
+		</tr>
+	</table>
+</form>
+			
