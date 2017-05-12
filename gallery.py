@@ -24,7 +24,7 @@ class login:
 		name, passwd = web.input().name, web.input().passwd
 		ident = db.select('example_users', where= 'name=$name', vars=locals())[0]
 		try:
-			if hashlib.sha1("allanpleaseaddrandomsaltperinstance"+passwd).hexdigest() == ident['pass']:
+			if hashlib.sha512(dbsalt+passwd).hexdigest() == ident['pass']:
 				session.login = 1
 				session.admin = ident['admin']
 				return render.login()
