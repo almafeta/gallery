@@ -1,6 +1,7 @@
 import hashlib
 import secrets
 import web
+from web import form
 
 urls = (
 	'/', 'index',
@@ -45,14 +46,30 @@ class logout:
 		return render.index()
 
 class register:
+	registration_form = form.Form(
+		form.Textbox("username", description="Login"),
+		form.Password("password1", description="Password"),
+		form.Password("password2", description="Repeat password"),
+		form.Button("submit", type="submit", description="Register!"),
+		validators = [
+			form.Validator("Passwords must match", lambda i: i.password1 == i.password2)]
+	)
+
 	def GET(self):
+		f = register.registration_form()
 		render = web.template.render('templates', base='layout')
-		return render.register()
+		return render.register(f)
 
 	def POST(self):
-		username, passwd = web.input().name, web.input().passwd1
+		f = register.registration_form()
+		render = web.template.render('templates', base='layout')
+		if not f.validates():
+			return render.register(f)
+
+		i = web.input()
+		username, passwd = i.username, i.password1
+		namecheck = db.query("SELECT exists(SELECT 1 FROM gallery WHERE username=${un})", vars={'un':username})
 		try:
-			namecheck = db.query("SELECT exists(SELECT 1 FROM gallery WHERE username=${un})", vars={'un':username})
 			return namecheck[0]
 		except:
 			return render.register_error("An unknown error occurred.")
