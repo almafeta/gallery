@@ -68,11 +68,14 @@ class register:
 
 		i = web.input()
 		username, passwd = i.username, i.password1
-		namecheck = db.query("SELECT exists(SELECT 1 FROM gallery WHERE username=${un})", vars={'un':username})
+		namecheck = db.query("SELECT exists(SELECT 1 FROM users WHERE username=${un})", vars={'un':username})
 		try:
-			return namecheck[0]
-		except:
-			return render.register_error("An unknown error occurred.")
+			if namecheck[0]['exists']:
+				return "<p>True!</p>"
+			else:
+				return "<p>False!</p>"
+		except Exception as e:
+			return "Unhandled exception."
 
 def loggedin():
 	return (session.login==1)
