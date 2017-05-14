@@ -88,13 +88,13 @@ gallerydbsalt=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
 id -u "gallerydb" &>/dev/null || useradd gallerydb
 sudo -u postgres bash -c "psql -c \"CREATE USER gallerydb WITH PASSWORD '$gallerydbpassword';\""
 sudo -u postgres bash -c "psql -c \"CREATE DATABASE gallery WITH OWNER=gallerydb;\""
+sudo -u postgres bash -c "psql -d gallery -c \"ALTER DATABASE gallery OWNER TO gallerydb;\""
+sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL ON DATABASE gallery TO gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"CREATE SCHEMA gallery;\""
+sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL ON SCHEMA gallery TO gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.users (id serial NOT NULL, pass character(128) NOT NULL, username character varying(128) NOT NULL, admin bool, salt character(32));\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL PRIVILEGES ON TABLE gallery.users TO gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA gallery TO gallerydb;\""
-sudo -u postgres bash -c "psql -d gallery -c \"ALTER DATABASE gallery OWNER TO gallerydb;\""
-sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL ON DATABASE gallery TO gallerydb;\""
-sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL ON SCHEMA gallery TO gallerydb;\""
 
 sudo awk '
 /# Put your actual configuration here/ {
