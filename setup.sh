@@ -99,7 +99,7 @@ sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL ON SCHEMA gallery TO ga
 sudo awk '
 /# Put your actual configuration here/ {
     print "local gallery gallerydb md5"
-|
+}
 { print }
 ' /etc/postgresql/9.5/main/pg_hba.conf
 
