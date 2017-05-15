@@ -120,6 +120,7 @@ systemctl enable nginx
 systemctl start gallery
 systemctl enable gallery
 service nginx restart
+service postgresql restart
 
 # Final notices
 echo "Gallery installed!  Save this information."
