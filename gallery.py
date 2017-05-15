@@ -68,7 +68,7 @@ class register:
 
 		i = web.input()
 		username, passwd = i.username, i.password1
-		namecheck = db.query("SELECT exists(SELECT 1 FROM users WHERE username=${un})", vars={'un':username})
+		namecheck = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})
 		try:
 			if namecheck[0]['exists']:
 				return "<p>True!</p>"
