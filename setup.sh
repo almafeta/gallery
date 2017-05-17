@@ -95,12 +95,13 @@ sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.users (id se
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL PRIVILEGES ON TABLE gallery.users TO gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA gallery TO gallerydb;\""
 
+sudo mv /etc/postgresql/9.5/main/pg_hba.conf /etc/postgresql/9.5/main/pg_hba.conf.bak
 sudo awk '
 /# Put your actual configuration here/ {
     print "local gallery gallerydb md5"
 }
 { print }
-' /etc/postgresql/9.5/main/pg_hba.conf
+' /etc/postgresql/9.5/main/pg_hba.conf.bak > /etc/postgresql/9.5/main/pg_hba.conf
 
 echo "# secrets.py - created by setup.sh" >> /web/gallery/secrets.py
 echo "dbpass = \"$gallerydbpassword\"" >> /web/gallery/secrets.py
