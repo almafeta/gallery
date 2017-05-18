@@ -1,4 +1,5 @@
-import hashlib
+
+import passlib
 import secrets
 import web
 from web import form
@@ -21,10 +22,13 @@ class login:
 		return render.login()
 
 	def POST(self):
+		from passlib.context import CryptContext
+		password_context = CryptContext(schemes=["pbkdf2_sha512"], deprecated="auto")
+
 		name, passwd = web.input().name, web.input().passwd
 		ident = db.select('example_users', where= 'name=$name', vars=locals())[0]
 		try:
-			if hashlib.sha512(dbsalt+passwd).hexdigest() == ident['pass']:
+			if password_context.verify(password, ident['password']):
 				session.login = 1
 				session.admin = ident['admin']
 				return render.login()
@@ -52,7 +56,8 @@ class register:
 		form.Password("password2", description="Repeat password"),
 		form.Button("submit", type="submit", description="Register!"),
 		validators = [
-			form.Validator("Passwords must match", lambda i: i.password1 == i.password2)]
+			form.Validator("Passwords must match!", lambda i: i.password1 == i.password2),
+			form.Validator("Password is too short!", lambda i: len(i.password1) <= 9)]
 	)
 
 	def GET(self):
@@ -68,14 +73,26 @@ class register:
 
 		i = web.input()
 		username, passwd = i.username, i.password1
-		namecheck = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})
+
 		try:
-			if namecheck[0]['exists']:
-				return "<p>True!</p>"
-			else:
-				return "<p>False!</p>"
+			namecheck = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})
 		except Exception as e:
 			return "Unhandled exception."
+
+		if namecheck[0]['exists']:
+			return "<p>True!</p>"
+		else:
+			createuser(i.username, i.password1)
+			return "<p>Created user!  Try to <a href=/login>log in</a>.</p>"
+
+		except Exception as e:
+
+	def createuser(username, password):
+		from passlib.context import CryptContext
+		password_context = CryptContext(schemes=["pbkdf2_sha512"], deprecated="auto")
+
+		cryptedpassword = password_context.hash(password)
+		db.insert(admin=False, pass=cryptedpassword, username=username)
 
 def loggedin():
 	return (session.login==1)
