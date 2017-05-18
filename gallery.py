@@ -26,7 +26,7 @@ class login:
 		password_context = CryptContext(schemes=["pbkdf2_sha512"], deprecated="auto")
 
 		name, passwd = web.input().name, web.input().passwd
-		ident = db.select('example_users', where= 'name=$name', vars=locals())[0]
+		ident = db.select('example_users', where='username=$name', vars=locals())[0]
 		try:
 			if password_context.verify(password, ident['password']):
 				session.login = 1
@@ -85,14 +85,12 @@ class register:
 			createuser(i.username, i.password1)
 			return "<p>Created user!  Try to <a href=/login>log in</a>.</p>"
 
-		except Exception as e:
-
 	def createuser(username, password):
 		from passlib.context import CryptContext
 		password_context = CryptContext(schemes=["pbkdf2_sha512"], deprecated="auto")
 
 		cryptedpassword = password_context.hash(password)
-		db.insert(admin=False, pass=cryptedpassword, username=username)
+		db.insert(admin=False, password=cryptedpassword, username=username)
 
 def loggedin():
 	return (session.login==1)

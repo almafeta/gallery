@@ -91,7 +91,7 @@ sudo -u postgres bash -c "psql -c \"CREATE DATABASE gallery WITH OWNER=gallerydb
 sudo -u postgres bash -c "psql -d gallery -c \"ALTER DATABASE gallery OWNER TO gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"CREATE SCHEMA gallery;\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL ON SCHEMA gallery TO gallerydb;\""
-sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.users (id serial NOT NULL, pass character varying(256) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
+sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.users (id serial NOT NULL, password character varying(256) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL PRIVILEGES ON TABLE gallery.users TO gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA gallery TO gallerydb;\""
 
