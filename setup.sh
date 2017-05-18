@@ -31,7 +31,7 @@ cd /web
 
 # Setup virtualenv for /web/gallery
 virtualenv gallery
-source gallery/bin/activate; pip install uwsgi web.py pygresql;deactivate
+source gallery/bin/activate; pip install passlib uwsgi web.py pygresql;deactivate
 
 # make sure gallery:www-data owns /web/gallery
 chown -R gallery:www-data /web/gallery
