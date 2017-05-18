@@ -24,11 +24,13 @@ class login:
 	def POST(self):
 		from passlib.context import CryptContext
 		password_context = CryptContext(schemes=["pbkdf2_sha512"], deprecated="auto")
+		render = web.template.render('templates', base='layout')
 
-		name, passwd = web.input().name, web.input().passwd
-		ident = db.select('example_users', where='username=$name', vars=locals())[0]
+		i = web.input()
+		username = i.user
+		ident = db.select('gallery.users', where='username=$username', vars=locals())[0]
 		try:
-			if password_context.verify(password, ident['password']):
+			if password_context.verify(i.passwd, ident['password']):
 				session.login = 1
 				session.admin = ident['admin']
 				return render.login()
@@ -82,15 +84,15 @@ class register:
 		if namecheck[0]['exists']:
 			return "<p>True!</p>"
 		else:
-			createuser(i.username, i.password1)
+			self.createuser(i.username, i.password1)
 			return "<p>Created user!  Try to <a href=/login>log in</a>.</p>"
 
-	def createuser(username, password):
+	def createuser(self, username, password):
 		from passlib.context import CryptContext
 		password_context = CryptContext(schemes=["pbkdf2_sha512"], deprecated="auto")
 
 		cryptedpassword = password_context.hash(password)
-		db.insert(admin=False, password=cryptedpassword, username=username)
+		db.insert('gallery.users', admin=False, password=cryptedpassword, username=username)
 
 def loggedin():
 	return (session.login==1)
