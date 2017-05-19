@@ -4,6 +4,11 @@ $def with (content)
 	<title>$content.title</title>
 </head>
 <body>
+	$if (session.userid == 0):
+		<p>You are logged out.</p>
+	$else:
+		<p>You are logged in.</p>
+
 $:content
 </body>
 </html>

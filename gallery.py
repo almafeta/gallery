@@ -1,4 +1,3 @@
-
 import passlib
 import secrets
 import web
@@ -13,18 +12,15 @@ urls = (
 
 class index:
 	def GET(self):
-		render = web.template.render('templates', base='layout')
 		return render.index()
 
 class login:
 	def GET(self):
-		render = web.template.render('templates', base='layout')
 		return render.login()
 
 	def POST(self):
 		from passlib.context import CryptContext
 		password_context = CryptContext(schemes=["pbkdf2_sha512"], deprecated="auto")
-		render = web.template.render('templates', base='layout')
 
 		i = web.input()
 		username = i.user
@@ -32,23 +28,26 @@ class login:
 		try:
 			if password_context.verify(i.passwd, ident['password']):
 				session.login = 1
+				session.userid = ident['id']
 				session.admin = ident['admin']
 				return render.login()
 				#return render.login_ok()
 			else:
 				session.login = 0
 				session.admin = 0
+				session.userid = 0
 				return render.login()
 				#return render.login_error()
 		except:
 			session.login=0
 			session.admin=0
+			session.userid=0
 			return render.login()
 			#return render.login_error()
 
 class logout:
 	def GET(self):
-		render = web.template.render('templates', base='layout')
+		session.kill()
 		return render.index()
 
 class register:
@@ -64,12 +63,10 @@ class register:
 
 	def GET(self):
 		f = register.registration_form()
-		render = web.template.render('templates', base='layout')
 		return render.register(f)
 
 	def POST(self):
 		f = register.registration_form()
-		render = web.template.render('templates', base='layout')
 		if not f.validates():
 			return render.register(f)
 
@@ -79,7 +76,7 @@ class register:
 		try:
 			namecheck = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})
 		except Exception as e:
-			return "Unhandled exception."
+			return "Unhandled database exception."
 
 		if namecheck[0]['exists']:
 			return "<p>True!</p>"
@@ -94,6 +91,9 @@ class register:
 		cryptedpassword = password_context.hash(password)
 		db.insert('gallery.users', admin=False, password=cryptedpassword, username=username)
 
+		createduser = db.query("SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})[0]
+		db.insert('gallery.userflags', userid=createduser['id'], flagtype="newuser")
+
 def loggedin():
 	return (session.login==1)
 
@@ -101,4 +101,5 @@ app = web.application(urls, globals())
 application = app.wsgifunc()
 db = web.database(dbn='postgres', db='gallery', user='gallerydb', pw=secrets.dbpass)
 store = web.session.DiskStore('sessions')
-session = web.session.Session(app, store, initializer={'login': 0})
+session = web.session.Session(app, store, initializer={'login': 0, 'userid': 0})
+render = web.template.render('templates', base='layout', globals={'session': session})
