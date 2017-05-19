@@ -12,14 +12,14 @@ urls = (
 
 class index:
 	def GET(self):
-		if session.login = 1 and isnewuser(session.username):
+		if session.login == 1 and isnewuser(session.userid):
 			return render.newuser()
 
 		return render.index()
 
 class login:
 	def GET(self):
-		if session.login = 1:
+		if session.login == 1:
 			return render.index()
 		else:
 			return render.login()
@@ -28,7 +28,7 @@ class login:
 		from passlib.context import CryptContext
 		password_context = CryptContext(schemes=["pbkdf2_sha512"], deprecated="auto")
 
-		if session.login = 1:
+		if session.login == 1:
 			return render.index()
 
 		i = web.input()
@@ -106,11 +106,11 @@ class register:
 def loggedin():
 	return (session.login==1)
 
-def isnewuser():
-	if session.login == 0:
+def isnewuser(userid):
+	if userid == 0:
 		return false;
 
-	newuser = db.query("SELECT exists(SELECT 1 FROM gallery.userflags WHERE userid=${uid} AND flagtype=\"newuser\")", vars={'uid':session.userid})
+	newuser = db.query("SELECT exists(SELECT 1 FROM gallery.userflags WHERE userid=${uid} AND flagtype=\"newuser\")", vars={'uid':str(userid)})
 	return newuser[0]['exists']
 
 app = web.application(urls, globals())
