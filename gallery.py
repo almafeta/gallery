@@ -100,8 +100,8 @@ class register:
 		cryptedpassword = password_context.hash(password)
 		db.insert('gallery.users', admin=False, password=cryptedpassword, username=username)
 
-		createduser = db.query("SELECT 1 FROM gallery.users WHERE username=${un}", vars={'un':username})[0]
-		db.insert('gallery.userflags', userid=createduser['id'], flagtype="newuser")
+		createduser = db.select('gallery.users', where="username=${un}", vars={'un':username})
+		db.insert('gallery.userflags', userid=createduser[0]['id'], flagtype="newuser")
 
 def loggedin():
 	return (session.login==1)
