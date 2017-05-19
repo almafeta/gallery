@@ -5,9 +5,9 @@ $def with (content)
 </head>
 <body>
 	$if (session.userid == 0):
-		<p>You are logged out.</p>
+		<p>You are logged out.  <a href="/register">Register</a> or <a href="/login">log in</a>.</p>
 	$else:
-		<p>You are logged in.</p>
+		<p>You are logged in.  <a href="/logout">Log out</a>.</p>
 
 $:content
 </body>
