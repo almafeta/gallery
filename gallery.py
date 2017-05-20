@@ -7,7 +7,9 @@ urls = (
 	'/', 'index',
 	'/login', 'login',
 	'/logout', 'logout',
+	'/newuser', 'newuser',
 	'/register', 'register'
+	'/@[\w]{1,32}', 'profile'
 )
 
 class index:
@@ -57,6 +59,24 @@ class logout:
 	def GET(self):
 		session.kill()
 		return render.index()
+
+class newuser:
+	def GET(self):
+		# newuser should never be called directly - only via orientation
+		return render.index()
+
+	def POST(self):
+		i = web.input(avatar={})
+		sn, un = i.screenname, i.username
+
+		db.insert('gallery.profiles', userid=session.userid, screenname=sn, urlname=un)
+
+		return render.newuser_finish(sn, un)
+
+class profile:
+	# Dummy function for now.
+	def GET(self, profile):
+		return "Allan please add profile page for {0}".format(profile)
 
 class register:
 	registration_form = form.Form(

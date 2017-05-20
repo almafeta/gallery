@@ -1,32 +1,6 @@
-$var title: Orientation
+$def with (screenname, username)
+$var title: Orientation complete!
 
-<form action="/login" method="POST">
-	<table id="login">
-		<tr>
-			<td>Profile Name: </td>
-			<td><input type="text" name="screenname"></td>
-		</tr>
-		<tr>
-			<td colspan=2>This will be the pretty screen name that is used in plain text.  You may use spaces, emoji, et cetera.  Maximum 64 characters.</td>
-		</tr>
-		<tr>
-			<td>Profile Abbreviation: </td>
-			<td><input type="password" name="urlname"></td>
-		</tr>
-		<tr>
-			<td colspan=2>This will be the URL-friendly name that is used in addresses and filenames.  For this reason, you can only use plain ASCII letters and numbers.  Hint:  If you use other art gallery sites, make your abbreviation the same as your username there!  Maximum 32 characters.
-		</tr>
-		<tr>
-			<td>Avatar: </td>
-			<td><input type="file" name="avatar" /></td>
-		</tr>
-		<tr>
-			<td colspan=2>Recommended resolution 256x256; will be rescaled if outside this range.  Max image size 1MB.</td>
-		</tr>
-		<tr>
-			<td></td>
-			<td><input type="submit" value="LOGIN"></td>
-		</tr>
-	</table>
-</form>
-			
+<h1>Hi, ${screenname}!</h1>
+
+<p>That's everything.  You can visit <a href="/@${urlname}">your profile page</a> to see how it looks, or go back to <a href="/index">the main index</a>.</p>
