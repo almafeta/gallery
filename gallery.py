@@ -110,7 +110,7 @@ def isnewuser(userid):
 	if userid == 0:
 		return false;
 
-	newuser = db.query("SELECT exists(SELECT 1 FROM gallery.userflags WHERE userid=${uid} AND flagtype=\"newuser\")", vars={'uid':str(userid)})
+	newuser = db.query("SELECT exists(SELECT 1 FROM gallery.userflags WHERE userid=${uid} AND flagtype='newuser')", vars={'uid':str(userid)})
 	return newuser[0]['exists']
 
 app = web.application(urls, globals())
