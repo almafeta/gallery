@@ -39,8 +39,7 @@ class login:
 				session.login = 1
 				session.userid = ident['id']
 				session.admin = ident['admin']
-				return render.login()
-				#return render.login_ok()
+				return render.login_ok()
 			else:
 				session.login = 0
 				session.admin = 0
