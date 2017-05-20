@@ -8,12 +8,16 @@ urls = (
 	'/login', 'login',
 	'/logout', 'logout',
 	'/newuser', 'newuser',
-	'/register', 'register'
-	'/@[\w]{1,32}', 'profile'
+	'/register', 'register',
+	'/@([\w]{1,32})', 'profile'
 )
 
 class index:
 	def GET(self):
+		if 'login' not in session:
+			session.login = 0
+			session.userid = 0
+
 		if session.login == 1 and isnewuser(session.userid):
 			return render.newuser()
 
