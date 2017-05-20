@@ -136,7 +136,11 @@ def isnewuser(userid):
 	newuser = db.query("SELECT exists(SELECT 1 FROM gallery.userflags WHERE userid=${uid} AND flagtype='newuser')", vars={'uid':str(userid)})
 	return newuser[0]['exists']
 
+def notfound():
+	return web.notfound(render.notfound())
+
 app = web.application(urls, globals())
+app.notfound = notfound
 application = app.wsgifunc()
 db = web.database(dbn='postgres', db='gallery', user='gallerydb', pw=secrets.dbpass)
 store = web.session.DiskStore('sessions')
