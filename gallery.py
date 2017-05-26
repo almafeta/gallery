@@ -45,7 +45,7 @@ class login:
 				session.login = 1
 				session.userid = ident['id']
 				session.admin = ident['admin']
-				return render.login_ok()
+				return web.seeother('/')
 			else:
 				session.login = 0
 				session.admin = 0
@@ -79,6 +79,8 @@ class newuser:
 			currentuser = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':un})
 			filename=currentuser[0]['userid']
 			fout = open('/web/gallery/avatars/' + filename,'w')
+			fout.write(i.avatar.file.read())
+			fout.close()
 
 		return render.newuser_finish(sn, un)
 
