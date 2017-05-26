@@ -78,7 +78,7 @@ class newuser:
 		if 'avatar' not in i:
 			return "<p>Please remember a profile.</p>"
 
-		if sn = "" or un = "":
+		if sn == "" or un == "":
 			return "<p>Please complete the form.</p>"
 
 		if 'avatar' in i:
@@ -88,7 +88,7 @@ class newuser:
 			fout.write(i.avatar.file.read())
 			fout.close()
 
-		db.delete('gallery.userflags', where="userid={uid} AND flagtype='newuser'", vars={'uid':session.userid)
+		db.delete('gallery.userflags', where="userid={uid} AND flagtype='newuser'", vars={'uid':session.userid})
 
 		return render.newuser_finish(sn, un)
 
