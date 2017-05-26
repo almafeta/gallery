@@ -67,7 +67,7 @@ class logout:
 class newuser:
 	def GET(self):
 		# newuser should never be called directly - only via orientation
-		return render.index()
+		return web.seeother('/')
 
 	def POST(self):
 		i = web.input(avatar={})
@@ -75,11 +75,17 @@ class newuser:
 
 		db.insert('gallery.profiles', userid=session.userid, screenname=sn, urlname=un)
 
+		if 'avatar' in i:
+			currentuser = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':un})
+			filename=currentuser[0]['userid']
+			fout = open('/web/gallery/avatars/' + filename,'w')
+
 		return render.newuser_finish(sn, un)
 
 class profile:
 	# Dummy function for now.
 	def GET(self, profile):
+		usercheck = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})
 		return "Allan please add profile page for {0}".format(profile)
 
 class register:
@@ -90,7 +96,8 @@ class register:
 		form.Button("submit", type="submit", description="Register!"),
 		validators = [
 			form.Validator("Passwords must match!", lambda i: i.password1 == i.password2),
-			form.Validator("Password is too short!", lambda i: len(i.password1) <= 9)]
+			form.Validator("Password is too short!", lambda i: len(i.password1) <= 9)
+		]
 	)
 
 	def GET(self):
@@ -129,9 +136,19 @@ class register:
 def loggedin():
 	return (session.login==1)
 
+def isuserflagged(flag):
+	if 'login' not in session:
+		return False
+
+	if 'userid' not in session:
+		return False
+
+	currentuser = db.query("SELECT exists(SELECT 1 FROM gallery.userflags WHERE userid=${uid} AND flagtype='${f}')", vars={'uid':str(userid), 'f':flag})
+	return currentuser[0][flag]
+
 def isnewuser(userid):
 	if userid == 0:
-		return false;
+		return False
 
 	newuser = db.query("SELECT exists(SELECT 1 FROM gallery.userflags WHERE userid=${uid} AND flagtype='newuser')", vars={'uid':str(userid)})
 	return newuser[0]['exists']

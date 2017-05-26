@@ -110,6 +110,7 @@ pyvenv.cfg
 gallery.sock
 
 ## Generated on install.
+avatars/
 secrets.py
 
 ## Generated at runtime.

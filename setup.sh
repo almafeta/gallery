@@ -33,6 +33,9 @@ cd /web
 virtualenv gallery
 source gallery/bin/activate; pip install passlib uwsgi web.py pygresql;deactivate
 
+# Create directory for avatars.
+mkdir /web/gallery/avatars
+
 # make sure gallery:www-data owns /web/gallery
 chown -R gallery:www-data /web/gallery
 
