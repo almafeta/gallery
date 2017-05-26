@@ -75,12 +75,20 @@ class newuser:
 
 		db.insert('gallery.profiles', userid=session.userid, screenname=sn, urlname=un)
 
+		if 'avatar' not in i:
+			return "<p>Please remember a profile.</p>"
+
+		if sn = "" or un = "":
+			return "<p>Please complete the form.</p>"
+
 		if 'avatar' in i:
 			currentuser = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':un})
 			filename=currentuser[0]['userid']
 			fout = open('/web/gallery/avatars/' + filename,'w')
 			fout.write(i.avatar.file.read())
 			fout.close()
+
+		db.delete('gallery.userflags', where="userid={uid} AND flagtype='newuser'", vars={'uid':session.userid)
 
 		return render.newuser_finish(sn, un)
 
@@ -116,11 +124,12 @@ class register:
 
 		try:
 			namecheck = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})
+			profilecheck = db.query("SELECT exists(SELECT 1 FROM gallery.profiles WHERE urlname=${un})", vars={'un':username})
 		except Exception as e:
 			return "Unhandled database exception."
 
-		if namecheck[0]['exists']:
-			return "<p>This username is already available.</p>"
+		if namecheck[0]['exists'] or profilecheck[0]['exists']:
+			return "<p>This username is not available.</p>"
 		else:
 			self.createuser(i.username, i.password1)
 			return "<p>Created user!  Try to <a href=/login>log in</a>.</p>"
