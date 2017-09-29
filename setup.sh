@@ -95,8 +95,8 @@ sudo -u postgres bash -c "psql -d gallery -c \"ALTER DATABASE gallery OWNER TO g
 sudo -u postgres bash -c "psql -d gallery -c \"CREATE SCHEMA gallery;\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL ON SCHEMA gallery TO gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.users (id serial NOT NULL, password character varying(256) NOT NULL, username character varying(128) NOT NULL, admin bool);\""
-sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.userflags (id serial NOT NULL, userid character varying(128) NOT NULL, flagtype character varying(64) NOT NULL);\""
-sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.profiles (id serial NOT NULL, userid character varying(128) NOT NULL, screenname character varying(64) NOT NULL, urlname character varying(32) NOT NULL, avatarfile character varying(64) NOT NULL);\""
+sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.userflags (id serial NOT NULL, userid integer NOT NULL, flagtype character varying(64) NOT NULL);\""
+sudo -u postgres bash -c "psql -d gallery -c \"CREATE TABLE gallery.profiles (id serial NOT NULL, userid integer NOT NULL, screenname character varying(64) NOT NULL, urlname character varying(32) NOT NULL, avatarfile character varying(64) NOT NULL);\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA gallery TO gallerydb;\""
 sudo -u postgres bash -c "psql -d gallery -c \"GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA gallery TO gallerydb;\""
 
