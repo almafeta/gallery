@@ -1,3 +1,4 @@
+import logging
 import passlib
 import secrets
 import web
@@ -71,31 +72,31 @@ class newuser:
 
 	def POST(self):
 		i = web.input(avatar={})
-		sn, un = i.screenname, i.username
+		sn, un = i.screenname, i.urlname
 
-		db.insert('gallery.profiles', userid=session.userid, screenname=sn, urlname=un)
+		db.insert('gallery.profiles', userid=session.userid, screenname=sn, urlname=un, avatarfile=session.userid)
 
 		if 'avatar' not in i:
-			return "<p>Please remember a profile.</p>"
+			return "<p>Please remember an avatar for your profile.</p>"
 
 		if sn == "" or un == "":
 			return "<p>Please complete the form.</p>"
 
 		if 'avatar' in i:
-			currentuser = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':un})
-			filename=currentuser[0]['userid']
-			fout = open('/web/gallery/avatars/' + filename,'w')
+			currentuser = db.query("SELECT id FROM gallery.users WHERE username=${un}) LIMIT 1", vars={'un':un})
+			filename=str(currentuser[0]['id'])
+			fout = open('/web/gallery/avatars/' + filename,'wb')
 			fout.write(i.avatar.file.read())
 			fout.close()
 
-		db.delete('gallery.userflags', where="userid={uid} AND flagtype='newuser'", vars={'uid':session.userid})
+		db.delete('gallery.userflags', where="id={uid} AND flagtype='newuser'", vars={'uid':session.userid})
 
 		return render.newuser_finish(sn, un)
 
 class profile:
 	# Dummy function for now.
 	def GET(self, profile):
-		usercheck = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})
+		#usercheck = db.query("SELECT exists(SELECT 1 FROM gallery.users WHERE username=${un})", vars={'un':username})
 		return "Allan please add profile page for {0}".format(profile)
 
 class register:
@@ -167,6 +168,7 @@ def isnewuser(userid):
 def notfound():
 	return web.notfound(render.notfound())
 
+logging.basicConfig(filename="gallery.log", level=logging.DEBUG)
 app = web.application(urls, globals())
 app.notfound = notfound
 application = app.wsgifunc()
