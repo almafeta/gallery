@@ -83,13 +83,13 @@ class newuser:
 			return "<p>Please complete the form.</p>"
 
 		if 'avatar' in i:
-			currentuser = db.query("SELECT id FROM gallery.users WHERE username=${un}) LIMIT 1", vars={'un':un})
+			currentuser = db.query("SELECT id FROM gallery.users WHERE username=${un} LIMIT 1", vars={'un':un})
 			filename=str(currentuser[0]['id'])
 			fout = open('/web/gallery/avatars/' + filename,'wb')
 			fout.write(i.avatar.file.read())
 			fout.close()
 
-		db.delete('gallery.userflags', where="id={uid} AND flagtype='newuser'", vars={'uid':session.userid})
+		db.delete('gallery.userflags', where="userid=${uid} AND flagtype='newuser'", vars={'uid':session.userid})
 
 		return render.newuser_finish(sn, un)
 
